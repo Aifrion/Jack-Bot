@@ -1,0 +1,13 @@
+Hi everyone! Welcome to Jack Bot! A game where questions are asked and you and your friends answer them 
+on your devices. But here is the thing, all but one of you will recieve the same question while that 
+special one must try their best to give an answer that blends in. This person is the spy and it is 
+up to the rest of the group to find out who that spy is. 
+
+The questions that will be asked will have answers that fall between the numbers 0 to 10. After seeing
+the question you be asked to fill in your answer on your device. Once everyone, including the spy, has
+answered, I will read the question out loud and repeat your answer for everyone to hear. Everyone will 
+have a chance to defend their answer and once that is over, everyone must vote on who the spy is. The
+person with the most votes is eliminated. If the spy is elimited the players win. If the spy is remains
+in the game along with one other player, the spy wins. 
+
+Now good luck and you and especially good luck to the spy.

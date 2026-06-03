@@ -1,0 +1,51 @@
+# Render blueprint — defines both services so a single "New Blueprint"
+# deploy stands the whole stack up.
+#
+# Usage:
+#   1. Push this repo to GitHub.
+#   2. On Render → New → Blueprint → connect the repo.
+#   3. After the first deploy, copy the game-server URL Render assigns and
+#      update VITE_SERVER_URL on the frontend service if the auto-linked
+#      value doesn't match (see comment below).
+
+services:
+  # --- Game server (Node + Express + Socket.IO) ----------------------------
+  - type: web
+    name: jackbot-server
+    runtime: node
+    plan: free
+    rootDir: game_server
+    # `--include=dev` forces npm to install devDependencies (tsc, types)
+    # even though Render sets NODE_ENV=production, which would otherwise
+    # skip them and break the build.
+    buildCommand: npm install --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+
+  # --- Frontend (Vite static site) -----------------------------------------
+  - type: web
+    name: jackbot-frontend
+    runtime: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      # Render auto-fills this from the server service's host. If you renamed
+      # the server above, update `name:` below to match.
+      - key: VITE_SERVER_URL
+        fromService:
+          type: web
+          name: jackbot-server
+          property: hostport
+      - key: NODE_VERSION
+        value: "22"
+    # SPA routing — every unknown path falls back to index.html so
+    # react-router can handle it client-side.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
