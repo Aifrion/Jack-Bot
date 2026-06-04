@@ -188,6 +188,41 @@
   border-radius: 999px;
 }
 
+.shirt-picker {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.shirt-swatch {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 3px solid var(--card-border);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.08s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.shirt-swatch:hover {
+  border-color: var(--accent-2);
+}
+
+.shirt-swatch-selected {
+  border-color: var(--accent-2);
+  box-shadow: 0 0 0 3px rgba(0, 224, 198, 0.25);
+  transform: scale(1.05);
+}
+
+.shirt-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 1px solid var(--card-border);
+  flex-shrink: 0;
+}
+
 .muted {
   color: var(--muted);
   font-size: 14px;

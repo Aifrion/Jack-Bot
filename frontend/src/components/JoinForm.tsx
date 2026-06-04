@@ -1,5 +1,11 @@
 import { useState, type FormEvent } from 'react';
-import { ROOM_CODE_LENGTH, MAX_NAME_LENGTH, type JoinPayload } from '../types';
+import {
+  ROOM_CODE_LENGTH,
+  MAX_NAME_LENGTH,
+  SHIRT_COLORS,
+  type JoinPayload,
+  type ShirtColor,
+} from '../types';
 
 interface JoinFormProps {
   onJoin: (payload: JoinPayload) => void;
@@ -10,16 +16,18 @@ const INVALID_CODE_CHARS = /[^A-Z0-9]/g;
 export function JoinForm({ onJoin }: JoinFormProps) {
   const [roomCode, setRoomCode] = useState('');
   const [playerName, setPlayerName] = useState('');
+  const [shirtColor, setShirtColor] = useState<ShirtColor | null>(null);
 
   const trimmedName = playerName.trim();
   const isCodeValid = roomCode.length === ROOM_CODE_LENGTH;
   const isNameValid = trimmedName.length > 0;
-  const canSubmit = isCodeValid && isNameValid;
+  const isColorValid = shirtColor !== null;
+  const canSubmit = isCodeValid && isNameValid && isColorValid;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!canSubmit) return;
-    onJoin({ roomCode, playerName: trimmedName });
+    if (!canSubmit || !shirtColor) return;
+    onJoin({ roomCode, playerName: trimmedName, shirtColor });
   }
 
   return (
@@ -60,6 +68,25 @@ export function JoinForm({ onJoin }: JoinFormProps) {
           aria-label="Your name"
         />
       </label>
+
+      <div className="field">
+        <span className="field-label">Shirt color</span>
+        <div className="shirt-picker" role="radiogroup" aria-label="Shirt color">
+          {SHIRT_COLORS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              role="radio"
+              aria-checked={shirtColor === c}
+              aria-label={c}
+              title={c}
+              className={`shirt-swatch${shirtColor === c ? ' shirt-swatch-selected' : ''}`}
+              style={{ backgroundColor: c }}
+              onClick={() => setShirtColor(c)}
+            />
+          ))}
+        </div>
+      </div>
 
       <button className="button" type="submit" disabled={!canSubmit}>
         Join game

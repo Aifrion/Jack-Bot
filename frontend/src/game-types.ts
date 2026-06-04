@@ -14,6 +14,7 @@ export interface PlayerView {
   socketId: string;
   name: string;
   score: number;
+  shirtColor: string;
   isAlive: boolean;
   hasAnswered: boolean;
   hasVoted: boolean;

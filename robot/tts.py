@@ -11,6 +11,8 @@ requires:
 this file (or wherever the process's CWD is).
 """
 
+from typing import Callable, Optional
+
 import sounddevice as sd
 from piper import PiperVoice
 from piper import PiperVoice, SynthesisConfig
@@ -31,11 +33,17 @@ def amplify(int16_bytes: bytes, gain: float) -> bytes:
     return samples.astype(np.int16).tobytes()
 
 
-# creates audio from str speech and plays on pupper's speaker
-def read_text(speech: str):
+# creates audio from str speech and plays on pupper's speaker.
+# If `should_stop()` returns True between chunks, playback is aborted
+# (remaining audio in the OS buffer is discarded, not drained).
+def read_text(speech: str, should_stop: Optional[Callable[[], bool]] = None):
     stream = None
+    interrupted = False
     try:
         for chunk in voice.synthesize(speech, syn_config=syn_config):
+            if should_stop is not None and should_stop():
+                interrupted = True
+                break
             if stream is None:
                 stream = sd.RawOutputStream(
                     samplerate=chunk.sample_rate,
@@ -47,7 +55,10 @@ def read_text(speech: str):
             stream.write(amplify(chunk.audio_int16_bytes, 4.0))
     finally:
         if stream is not None:
-            stream.stop()
+            if interrupted:
+                stream.abort()
+            else:
+                stream.stop()
             stream.close()
 
 

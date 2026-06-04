@@ -6,7 +6,9 @@ export function Landing() {
   const navigate = useNavigate();
 
   function handleJoin(payload: JoinPayload) {
-    navigate(`/lobby/${payload.roomCode}`, { state: { playerName: payload.playerName } });
+    navigate(`/lobby/${payload.roomCode}`, {
+      state: { playerName: payload.playerName, shirtColor: payload.shirtColor },
+    });
   }
 
   return (

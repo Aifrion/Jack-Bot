@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useLocation, useParams, useNavigate } from 'react-router-dom';
 import { useSocket } from '../context/SocketContext';
 import type { Ack, RoomState } from '../game-types';
+import type { ShirtColor } from '../types';
 
 interface LocationState {
   playerName?: string;
+  shirtColor?: ShirtColor;
 }
 
 const MIN_PLAYERS_TO_START = 3;
@@ -14,7 +16,9 @@ export function Lobby() {
   const { state } = useLocation();
   const navigate = useNavigate();
   const { socket, socketId } = useSocket();
-  const playerName = (state as LocationState | null)?.playerName ?? 'Player';
+  const locationState = state as LocationState | null;
+  const playerName = locationState?.playerName ?? 'Player';
+  const shirtColor = locationState?.shirtColor ?? 'white';
 
   const [roomState, setRoomState] = useState<RoomState | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,14 +29,14 @@ export function Lobby() {
     }
 
     socket.on('room-state', onRoomState);
-    socket.emit('join-room', { code, name: playerName }, (ack: Ack) => {
+    socket.emit('join-room', { code, name: playerName, shirtColor }, (ack: Ack) => {
       if (!ack?.ok) setError(ack?.error ?? 'Failed to join room');
     });
 
     return () => {
       socket.off('room-state', onRoomState);
     };
-  }, [socket, code, playerName]);
+  }, [socket, code, playerName, shirtColor]);
 
   useEffect(() => {
     if (roomState && roomState.phase !== 'lobby') {
@@ -74,6 +78,11 @@ export function Lobby() {
                     key={p.socketId}
                     className={`player-chip${p.socketId === roomState?.hostSocketId ? ' player-chip-host' : ''}`}
                   >
+                    <span
+                      className="shirt-dot"
+                      style={{ backgroundColor: p.shirtColor }}
+                      title={p.shirtColor}
+                    />
                     {p.name}
                     {p.socketId === roomState?.hostSocketId && (
                       <span className="host-badge">host</span>

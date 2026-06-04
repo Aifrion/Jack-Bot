@@ -13,7 +13,10 @@ import {
 interface JoinPayload {
   code: string;
   name: string;
+  shirtColor: string;
 }
+
+const MAX_SHIRT_COLOR_LENGTH = 20;
 
 const MIN_PLAYERS_TO_START = 3;
 
@@ -30,13 +33,15 @@ export function registerRoomHandlers(io: Server, socket: Socket) {
   socket.on('join-room', (payload: JoinPayload, ack?: Ack) => {
     const code = payload?.code?.toUpperCase?.() ?? '';
     const name = payload?.name?.trim?.() ?? '';
+    const shirtColor = payload?.shirtColor?.trim?.().slice(0, MAX_SHIRT_COLOR_LENGTH) ?? '';
     const room = getRoom(code);
 
     if (!room) return ack?.({ ok: false, error: 'Room not found' });
     if (room.phase !== 'lobby') return ack?.({ ok: false, error: 'Game already started' });
     if (!name) return ack?.({ ok: false, error: 'Name is required' });
+    if (!shirtColor) return ack?.({ ok: false, error: 'Shirt color is required' });
 
-    addPlayer(room, { socketId: socket.id, name, score: 0 });
+    addPlayer(room, { socketId: socket.id, name, score: 0, shirtColor });
     if (!room.hostSocketId) room.hostSocketId = socket.id;
     socket.join(room.code);
     ack?.({ ok: true });

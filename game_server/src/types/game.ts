@@ -14,6 +14,7 @@ export interface Player {
   socketId: string;
   name: string;
   score: number;
+  shirtColor: string;
 }
 
 export interface Room {
@@ -46,6 +47,7 @@ export interface RoomStateDto {
     socketId: string;
     name: string;
     score: number;
+    shirtColor: string;
     isAlive: boolean;
     hasAnswered: boolean;
     hasVoted: boolean;
@@ -79,6 +81,7 @@ export function toRoomStateDtoFor(room: Room, viewerSocketId: string): RoomState
       socketId: p.socketId,
       name: p.name,
       score: p.score,
+      shirtColor: p.shirtColor,
       isAlive: room.alivePlayerIds.has(p.socketId),
       hasAnswered: room.answers.has(p.socketId),
       hasVoted: room.votes.has(p.socketId),
@@ -131,6 +134,7 @@ export interface RobotStateDto {
     socketId: string;
     name: string;
     score: number;
+    shirtColor: string;
     isAlive: boolean;
     hasAnswered: boolean;
     hasVoted: boolean;
@@ -153,6 +157,7 @@ export function toRobotStateDto(room: Room): RobotStateDto {
       socketId: p.socketId,
       name: p.name,
       score: p.score,
+      shirtColor: p.shirtColor,
       isAlive: room.alivePlayerIds.has(p.socketId),
       hasAnswered: room.answers.has(p.socketId),
       hasVoted: room.votes.has(p.socketId),
