@@ -18,7 +18,7 @@ export function Lobby() {
   const { socket, socketId } = useSocket();
   const locationState = state as LocationState | null;
   const playerName = locationState?.playerName ?? 'Player';
-  const shirtColor = locationState?.shirtColor ?? 'white';
+  const shirtColor = locationState?.shirtColor ?? 'red';
 
   const [roomState, setRoomState] = useState<RoomState | null>(null);
   const [error, setError] = useState<string | null>(null);
