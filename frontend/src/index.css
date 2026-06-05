@@ -1,18 +1,17 @@
 :root {
-  --bg-1: #1a0b2e;
-  --bg-2: #34106b;
-  --card: rgba(255, 255, 255, 0.06);
-  --card-border: rgba(255, 255, 255, 0.14);
-  --text: #f4f0ff;
-  --muted: #c0aee0;
-  --accent: #ff3ca5;
-  --accent-2: #00e0c6;
+  --bg: #e9e1cc;
+  --card: #f4ecd8;
+  --card-border: #c9bea5;
+  --text: #3d342a;
+  --muted: #8b7e6a;
+  --accent: #a68a64;
+  --accent-2: #7a8870;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
   font-family: var(--sans);
-  color-scheme: dark;
+  color-scheme: light;
   color: var(--text);
 }
 
@@ -28,9 +27,7 @@ body,
 }
 
 body {
-  background:
-    radial-gradient(120% 120% at 50% 0%, var(--bg-2) 0%, var(--bg-1) 60%);
-  background-attachment: fixed;
+  background: var(--bg);
 }
 
 h1,
