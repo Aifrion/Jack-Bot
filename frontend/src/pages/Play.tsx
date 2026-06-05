@@ -220,7 +220,12 @@ function AnnouncementView({ roomState, isHost, socket, code }: PhaseBodyProps) {
   );
 }
 
-function DefenseView({ roomState }: PhaseBodyProps) {
+function DefenseView({ roomState, isHost, socket, code }: PhaseBodyProps) {
+  function handleSkip() {
+    socket.emit('phase-done', code, (ack: Ack) => {
+      if (!ack?.ok) console.warn('skip rejected:', ack?.error);
+    });
+  }
   return (
     <section className="phase-body">
       <p className="prompt-text">Defend yourselves! Talk it out — 2 minutes.</p>
@@ -235,6 +240,11 @@ function DefenseView({ roomState }: PhaseBodyProps) {
           ))}
         </ul>
       </div>
+      {isHost && (
+        <button className="button" type="button" onClick={handleSkip}>
+          Skip discussion → vote
+        </button>
+      )}
     </section>
   );
 }

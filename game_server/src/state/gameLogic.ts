@@ -189,6 +189,9 @@ export function advancePhase(io: Server, room: Room, callerSocketId: string): st
     case 'announcement':
       enterDefense(io, room);
       return null;
+    case 'defense':
+      enterVoting(io, room);
+      return null;
     case 'round_result':
       enterQuestion(io, room);
       return null;
