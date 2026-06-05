@@ -112,6 +112,15 @@ def parse_args() -> argparse.Namespace:
         default=2.0,
         help="Seconds to wait in the print-only fallback before phase-done (default: 2)",
     )
+    parser.add_argument(
+        "--test-elimination",
+        action="store_true",
+        help=(
+            "Test mode: after handshake, immediately publish a fake elimination "
+            "to /find_person (name=TestPlayer, color=red). Lets you smoke-test "
+            "the ROS2 pub/sub without playing a full game."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -159,6 +168,11 @@ def main() -> int:
             sio.disconnect()
             return
         print(f"[robot] subscribed to room {args.code}")
+        if args.test_elimination:
+            # Small delay so the ROS2 subscriber has time to discover this
+            # publisher before the one-shot message goes out.
+            print("[robot] test mode: scheduling fake elimination → /find_person (TestPlayer, red)")
+            threading.Timer(1.0, lambda: find_person.publish("TestPlayer", "red")).start()
 
     @sio.on("robot-state")
     def on_robot_state(state: dict[str, Any]) -> None:

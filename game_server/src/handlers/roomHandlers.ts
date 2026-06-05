@@ -1,5 +1,12 @@
 import type { Server, Socket } from 'socket.io';
-import { addPlayer, createRoom, findRoomBySocket, getRoom, removePlayer } from '../state/rooms.js';
+import {
+  addPlayer,
+  createRoom,
+  findRoomBySocket,
+  getRoom,
+  removePlayer,
+  resetRoomForNewGame,
+} from '../state/rooms.js';
 import { toRoomStateDtoFor, toRobotStateDto } from '../types/game.js';
 import {
   advancePhase,
@@ -110,6 +117,14 @@ export function registerRoomHandlers(io: Server, socket: Socket) {
     const wasHost = room.hostSocketId === socket.id;
     removePlayer(room, socket.id);
     room.alivePlayerIds.delete(socket.id);
+
+    if (room.players.size === 0) {
+      console.log(`[room ${room.code}] all players left; ending game session`);
+      resetRoomForNewGame(room);
+      room.hostSocketId = '';
+      broadcastRoomState(io, room);
+      return;
+    }
 
     if (wasHost) {
       const next = room.players.values().next().value;
